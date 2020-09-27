@@ -15,10 +15,7 @@ namespace Gof4Demo.SimpleTemplete
             var tp2 = typeof(MemoryStream);
             var tp3 = typeof(FileStream);
 
-
-
             new MemoryStream();
-
         }
 
 

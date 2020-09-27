@@ -143,12 +143,7 @@ namespace Gof4Demo.SimplePolicy
             }
 
 
-            //public static ICulPolicy GetPolicy(string culChar)
-            //{
-            //    var fac=
-
-            //    _culPolicyTable.Add(culChar, culPolicy);
-            //}
+            
         }
 
 
