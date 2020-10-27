@@ -13,13 +13,13 @@ namespace Gof4Demo.SimpeChainOfResponsibility
             _stringFilterBuilder = new StringFilterBuilder();
 
             _stringFilterBuilder.Add(new NameFilter());
-           // _stringFilterBuilder.Add(new PlaceFilter());
+            _stringFilterBuilder.Add(new PlaceFilter());
 
         }
 
         public void Filter()
         {
-            var str = "刘广南今天在广州分享设计模式";
+            var str = "小明今天在广州分享设计模式";
             var filterStr = _stringFilterBuilder.DoFilter(str);
             Console.WriteLine(filterStr);
         }
@@ -27,8 +27,18 @@ namespace Gof4Demo.SimpeChainOfResponsibility
 
     public class ChainOfResponsibilityExample
     {
+        /// <summary>
+        /// 处理数据上下文
+        /// </summary>
+        public class StringContext
+        {
+            public string Content { get; set; }
+            public bool IsFinish { get; set; }
+        }
 
-
+        /// <summary>
+        /// 处理的管道构建
+        /// </summary>
         public class StringFilterBuilder
         {
             private List<IStringFilter> _filters = new List<IStringFilter>();
@@ -39,49 +49,61 @@ namespace Gof4Demo.SimpeChainOfResponsibility
                 return this;
             }
 
-            public string DoFilter(string val)
+            public string DoFilter(string str)
             {
+                var context = new StringContext() { Content = str };
+
                 foreach (var item in _filters)
                 {
-                    val = item.Invoke(val);
+                    item.Invoke(context);
+                    if (context.IsFinish)
+                    {
+                        return context.Content;
+                    }
                 }
-                return val;
+                return context.Content;
             }
         }
 
-       
 
 
+        /// <summary>
+        /// 定义处理的接口
+        /// </summary>
         public interface IStringFilter
         {
-            string Invoke(string val);
+            void Invoke(StringContext context);
         }
 
-
+        /// <summary>
+        /// 名字拦截实现
+        /// </summary>
         public class NameFilter : IStringFilter
         {
-            public string Invoke(string val)
+            public void Invoke(StringContext context)
             {
-                var nameList = new List<string> { "刘广南" };
+                var nameList = new List<string> { "小明" };
                 foreach (var item in nameList)
                 {
-                    val = val.Replace(item, "***");
+                    context.Content = context.Content.Replace(item, "***");                    
                 }
-                return val;
+                context.IsFinish = true;
             }
         }
 
+        /// <summary>
+        /// 未知拦截实现
+        /// </summary>
         public class PlaceFilter : IStringFilter
         {
-            public string Invoke(string val)
+            public void Invoke(StringContext context)
             {
                 var placeList = new List<string> { "广州" };
 
                 foreach (var item in placeList)
                 {
-                    val = val.Replace(item, "***");
+                    context.Content = context.Content.Replace(item, "***");
                 }
-                return val;
             }
         }
 
