@@ -1,5 +1,4 @@
-﻿using DotNetCore.CAP;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Threading;
@@ -10,11 +9,10 @@ namespace TY.Microservice.Common.Core
     public class EFContext : DbContext, IUnitOfWork, ITransaction
     {
 
-        ICapPublisher _capBus;
 
-        public EFContext(DbContextOptions options, ICapPublisher capBus) : base(options)
+
+        public EFContext(DbContextOptions options) : base(options)
         {
-            _capBus = capBus;
         }
 
         #region IUnitOfWork
@@ -34,7 +32,7 @@ namespace TY.Microservice.Common.Core
         public Task<IDbContextTransaction> BeginTransactionAsync()
         {
             if (_currentTransaction != null) return null;
-            _currentTransaction = Database.BeginTransaction(_capBus, autoCommit: false);
+            _currentTransaction = Database.BeginTransaction();
             return Task.FromResult(_currentTransaction);
         }
 
